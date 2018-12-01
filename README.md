@@ -37,6 +37,8 @@
      - `download <arg>` download a file
      - `cd <arg>` change directory
      - `ls` list files in current directory
+     
+     zark
      - `rm <arg>` remove a file
      - `rmdir <arg>` remove a directory
      - `screenshot` take a screenshot from the victim computer
