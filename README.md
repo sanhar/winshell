@@ -14,7 +14,6 @@
 
 ### Features
  - The client can be compiled into an executable file
- -
  - Supports multi-clients
  - The server can be run on Linux / Windows
  - The program can perform denial of service attacks with all clients connected to the server
