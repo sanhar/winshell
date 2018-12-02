@@ -1,5 +1,3 @@
-
-[![PythonV](https://img.shields.io/badge/python-2.7-brightgreen.svg)](https://www.python.org/download/releases/2.7/)
 # winshell
 
 **winshell is a python opensource RAT and Botnet**
