@@ -1,4 +1,5 @@
-[![Supported Python versions](https://img.shields.io/badge/python-2.7-brightgreen.svg)](https://www.python.org/download/releases/2.7/)
+
+[![PythonV](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/download/releases/2.7/)
 # winshell
 
 **winshell is a python opensource RAT and Botnet**
@@ -6,9 +7,11 @@
 ### Installation
  - ####     Windows
    - `git clone https://github.com/Z4RK/winshell.git`
+   - `cd winshell`
    - `pip install -r requierements.txt`
  - #### Linux
    - `git clone https://github.com/Z4RK/winshell.git`
+   - `cd winshell`
    - `./install.sh`
    - `pip install -r requierements.txt`
 
