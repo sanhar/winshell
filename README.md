@@ -48,6 +48,7 @@
      - `currentporcess` get the current process run on the victim computer
      - `force <arg>` do a shell command with an output (ipconfig, dir)
      - `force2 <arg>` do a shell command without an output(mkdir, start...)
+     - `quit` quit the session
      # 
      
      [![PythonV](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/download/releases/2.7/)
