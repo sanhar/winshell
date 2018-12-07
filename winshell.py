@@ -60,13 +60,11 @@ class Network:
 		c.send("upload")
 		c.recv(1024)
 		try:
-			result = uploadFile(c, cmdO[1], blue, red, green, default, cmdO[2])
+			result = uploadFile(c, cmdO[1], red, default, cmdO[2])
 		except IndexError:	
 			result = uploadFile(c, cmdO[1], blue, red, green, default)
 		if result == "T":
 			print "{}[+]{} Upload Complete".format(green, default) 
-		else:
-			print "{}[-]{} ERR".format(red, default)
 
 	def download(self, cmd, green, red, default):
 		cmdO = cmd.split(" ")
@@ -81,11 +79,9 @@ class Network:
 			
 		c.send("download")
 		c.recv(1024)
-		result = downloadFile(c, cmd[1],  blue, red, green, default)
+		result = downloadFile(c, cmdO[1], red, default)
 		if result == "T":
 			print "{}[+]{} Download Complete".format(green, default)
-		else:
-			print "{}[-]{} ERR".format(red, default)
 		os.chdir(currentdir)
 
 	def screenshot(self, cmd, green, default):
@@ -288,4 +284,3 @@ def Main():
 
 if __name__ == '__main__':
 	Main()
-
