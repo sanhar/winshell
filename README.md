@@ -18,10 +18,10 @@
  - Supports multi-clients
  - Can perform denial of service attacks with all clients connected to the server
  - Can execute all shell commands
- - Can upload and download file
+ - Can upload files
+ - Can download files
  - Can run the client at startup
- - Can browse files 
- - & more...
+ - Can browse files & more...
  
 ### Usage
  - #### Generate the client
