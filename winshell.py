@@ -62,7 +62,7 @@ class Network:
 		try:
 			result = uploadFile(c, cmdO[1], red, default, cmdO[2])
 		except IndexError:	
-			result = uploadFile(c, cmdO[1], blue, red, green, default)
+			result = uploadFile(c, cmdO[1], red, default)
 		if result == "T":
 			print "{}[+]{} Upload Complete".format(green, default) 
 
@@ -71,9 +71,9 @@ class Network:
 		currentdir = os.getcwd()
 		try:
 			os.chdir(cmdO[2])
-		except WindowsError:
-			print "{}[-]{} '{}' doesn't exist".format(red, default, path)
-			return
+		#except WindowsError:
+		#	print "{}[-]{} '{}' doesn't exist".format(red, default, path)
+		#	return
 		except IndexError:
 			pass
 			
@@ -258,7 +258,6 @@ class Console:
 		print " force2 <arg>     force a os.system"
 
 	def winshellI(self):
-		try:
 			while True:
 				hostname, pwd = self.Connection.send_command("getcmd")
 				print
@@ -275,9 +274,9 @@ class Console:
 	
 				else:
 					self.Connection.send_command(cmd, self.blue, self.green, self.red, self.default)		
-		except:
-			print 
-			return
+		#except:
+		#	print 
+		#	return
 def Main():
 	Winshell = Console()
 	Winshell.menu()
