@@ -25,14 +25,14 @@ class CMDA:
 	    pwd = os.getcwd()
 	    s.send(" ")
 	    filename = s.recv(1024)
+	    if filename[:3] == "ERR":
+			s.send(" ")
+			return
 	    path = s.recv(1024)
-	    print "aaa"
 	    if path != "None":
 			try:
-					print "eee"
-					os.chdir(path)
+				os.chdir(path)
 			except:
-				print "zzz"
 				s.send("ERR")
 				return
 	    s.send(" ")
