@@ -71,9 +71,9 @@ class Network:
 		currentdir = os.getcwd()
 		try:
 			os.chdir(cmdO[2])
-		#except WindowsError:
-		#	print "{}[-]{} '{}' doesn't exist".format(red, default, path)
-		#	return
+		except WindowsError:
+			print "{}[-]{} '{}' doesn't exist".format(red, default, path)
+			return
 		except IndexError:
 			pass
 			
