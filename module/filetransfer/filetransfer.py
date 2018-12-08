@@ -1,6 +1,6 @@
 import socket, os
 
-def downloadFile(c, filename, blue, red, green, default):
+def downloadFile(c, filename, red, default):
     if "/" in filename:
         filename = filename.split("/")
         for i in filename:
@@ -29,7 +29,7 @@ def downloadFile(c, filename, blue, red, green, default):
         print "{}[-]{} File does not Exists!".format(red, default)
 	return "F"
 
-def uploadFile(c, filename, blue, red, green, default, path="None"):
+def uploadFile(c, filename, red, default, path="None"):
 	if os.path.isfile(filename):
 		if "/" in filename:
 			filename = filename.split("/")
