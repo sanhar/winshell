@@ -16,12 +16,12 @@
 ### Features
  - The client can be compiled into an executable file
  - Supports multi-clients
- - The server can be run on Linux / Windows
- - The program can perform denial of service attacks with all clients connected to the server
+ - Can perform denial of service attacks with all clients connected to the server
  - Can execute all shell commands
  - Can upload and download file
  - Can run the client at startup
- - Can browse files & more...
+ - Can browse files 
+ - & more...
  
 ### Usage
  - #### Generate the client
